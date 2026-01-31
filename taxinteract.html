@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bangor Tax Hike Calculator</title>
+    <style>
+        :root {
+            --primary: #004d40;
+            --accent: #d81b60;
+            --bg: #f4f4f9;
+            --card-bg: #ffffff;
+            --text: #333;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+        .calculator-card {
+            background: var(--card-bg);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            max-width: 450px;
+            width: 100%;
+        }
+        h2 {
+            margin-top: 0;
+            color: var(--primary);
+            text-align: center;
+        }
+        .input-group {
+            margin-bottom: 1.5rem;
+        }
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+        input[type="number"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+        input[type="number"]:focus {
+            border-color: var(--primary);
+            outline: none;
+        }
+        .results-area {
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.5s ease;
+        }
+        .result-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.8rem;
+            font-size: 0.95rem;
+        }
+        .result-row.total {
+            border-top: 2px solid #ddd;
+            padding-top: 0.8rem;
+            margin-top: 0.8rem;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--primary);
+        }
+        .highlight {
+            color: var(--accent);
+            font-weight: 700;
+        }
+        .disclaimer {
+            font-size: 0.75rem;
+            color: #666;
+            margin-top: 1.5rem;
+            text-align: center;
+            line-height: 1.4;
+        }
+        button {
+            width: 100%;
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 8px;
+            font-size: 1rem;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #00332a;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div class="calculator-card">
+    <h2>Bangor Tax Impact Calculator</h2>
+    <p style="text-align:center; font-size: 0.9rem; margin-bottom: 1.5rem; color: #555;">
+        Calculate the cost of the 2026 Penobscot County Budget Increase (Jail Shortfall).
+    </p>
+
+    <div class="input-group">
+        <label for="homeValue">Assessed Property Value ($)</label>
+        <input type="number" id="homeValue" placeholder="e.g. 250000" oninput="calculateTax()">
+    </div>
+
+    <button onclick="calculateTax()">Calculate Increase</button>
+
+    <div class="results-area" id="results">
+        <div class="result-row">
+            <span>Current Mil Rate (Est. 2025):</span>
+            <span>$17.70 / $1k</span>
+        </div>
+        <div class="result-row">
+            <span>New Mil Rate (With Hike):</span>
+            <span>$17.91 / $1k</span>
+        </div>
+        <div class="result-row total">
+            <span>Your Annual Tax Increase:</span>
+            <span class="highlight" id="increaseAmount">$0.00</span>
+        </div>
+        <div class="result-row">
+            <span>Total New Estimated Bill:</span>
+            <span id="totalBill">$0.00</span>
+        </div>
+    </div>
+
+    <div class="disclaimer">
+        <strong>Note:</strong> This calculation is based on the specific $0.21 mil rate increase attributed to the county budget passed Dec 31, 2025. It assumes no other changes to the Bangor City or School budgets, which are set separately in June.
+    </div>
+</div>
+
+<script>
+    function calculateTax() {
+        // Get input value
+        const value = parseFloat(document.getElementById('homeValue').value);
+        
+        // Constants based on Bangor 2025/2026 data
+        const oldRate = 17.70; // 2025 Rate
+        const increaseRate = 0.21; // Attributed to County Hike
+        const newRate = oldRate + increaseRate;
+
+        if (isNaN(value) || value <= 0) {
+            document.getElementById('results').style.display = 'none';
+            return;
+        }
+
+        // Calculations
+        const currentTax = (value / 1000) * oldRate;
+        const increase = (value / 1000) * increaseRate;
+        const newTotal = (value / 1000) * newRate;
+
+        // Update DOM
+        document.getElementById('increaseAmount').textContent = `+$${increase.toFixed(2)}`;
+        document.getElementById('totalBill').textContent = `$${newTotal.toFixed(2)}`;
+        
+        // Show results
+        document.getElementById('results').style.display = 'block';
+    }
+</script>
+
+</body>
+</html>
